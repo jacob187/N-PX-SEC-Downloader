@@ -169,3 +169,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+
+# Repo specific
+files/
+npx_download_progress.txt
