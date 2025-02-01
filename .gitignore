@@ -176,5 +176,5 @@ cython_debug/
 # Repo specific
 files/
 npx_download_progress.txt
-
+npx_download_errors.txt
 
