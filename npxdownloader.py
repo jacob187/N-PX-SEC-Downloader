@@ -140,6 +140,9 @@ def get_number_npx_filings(number_of_filings: int, year: int):
 
 
 if __name__ == "__main__":
+    # This is required for the SEC as the request header
     set_identity("Your Name your@email.com")
-    start_date = datetime(2024, 1, 1)  # Example
+    start_date = datetime(
+        2024, 1, 1
+    )  # Example, change the first parameter to the desired year
     download_npx_filings_from_date(start_date=start_date, path="./files")
