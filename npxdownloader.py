@@ -5,6 +5,7 @@ import gzip
 import time
 import httpx
 import asyncio
+import ssl
 
 
 def download_npx_filings_year(year: int, path: str) -> None:
@@ -21,21 +22,19 @@ def download_npx_filings_from_date(start_date, path):
         start_date: The date to start processing from
         path: The base path where files should be downloaded
     """
-    # Get the year from start_date and set end_date to December 31st of that year
     year = start_date.year if isinstance(start_date, datetime) else start_date.year
     end_date = datetime(year, 12, 31).date()
 
     progress_file = "npx_download_progress.txt"
+    error_log_file = "npx_download_errors.txt"
     total_filings_processed = 0
 
-    # Convert start_date to date object if it's datetime
     current_date = start_date.date() if isinstance(start_date, datetime) else start_date
 
-    # If progress file exists and has content, start from the last processed date + 1 day
     if os.path.exists(progress_file):
         with open(progress_file, "r") as f:
             last_processed = f.read().strip()
-            if last_processed:  # Only process if file has content
+            if last_processed:
                 current_date = datetime.strptime(
                     last_processed, "%Y-%m-%d"
                 ).date() + timedelta(days=1)
@@ -52,7 +51,7 @@ def download_npx_filings_from_date(start_date, path):
             filings_found = False
             filings = get_filings(filing_date=date_str, form="N-PX")
             if filings is not None:
-                filings_list = list(filings)  # Convert generator to list to get count
+                filings_list = list(filings)
                 print(f"Found {len(filings_list)} filings for {date_str}")
 
                 for filing in filings_list:
@@ -71,28 +70,35 @@ def download_npx_filings_from_date(start_date, path):
                             print(
                                 f"Successfully downloaded filing for {filing.company} (CIK: {filing.cik})"
                             )
-                        except gzip.BadGzipFile:
-                            print(
-                                f"Error downloading filing for {filing.company} (CIK: {filing.cik}): Bad gzip file"
+                        except (
+                            gzip.BadGzipFile,
+                            httpx.HTTPError,
+                            asyncio.TimeoutError,
+                            ssl.SSLError,
+                        ) as e:
+                            error_msg = (
+                                f"{date_str},{filing.cik},{filing.company},{str(e)}"
                             )
-                            continue
-                        except httpx.HTTPError as e:
-                            print(
-                                f"HTTP Error downloading filing for {filing.company} (CIK: {filing.cik}): {str(e)}"
-                            )
-                            continue
-                        except asyncio.TimeoutError:
-                            print(
-                                f"Timeout downloading filing for {filing.company} (CIK: {filing.cik})"
-                            )
+                            print(f"Error downloading filing: {error_msg}")
+                            # Log error to file
+                            with open(error_log_file, "a") as f:
+                                f.write(f"{error_msg}\n")
+                            time.sleep(5)  # Longer delay after error
                             continue
                         except Exception as e:
-                            print(
-                                f"Error downloading filing for {filing.company} (CIK: {filing.cik}): {str(e)}"
+                            error_msg = (
+                                f"{date_str},{filing.cik},{filing.company},{str(e)}"
                             )
+                            print(f"Error downloading filing: {error_msg}")
+                            # Log error to file
+                            with open(error_log_file, "a") as f:
+                                f.write(f"{error_msg}\n")
                             continue
                     except Exception as e:
-                        print(f"Error processing filing: {str(e)}")
+                        error_msg = f"{date_str},{filing.cik},{filing.company},Processing error: {str(e)}"
+                        print(f"Error processing filing: {error_msg}")
+                        with open(error_log_file, "a") as f:
+                            f.write(f"{error_msg}\n")
                         continue
             else:
                 print(f"No filings found for {current_date}")
@@ -109,7 +115,10 @@ def download_npx_filings_from_date(start_date, path):
                 f.write(current_date.strftime("%Y-%m-%d"))
 
         except Exception as e:
-            print(f"Error processing date {current_date}: {str(e)}")
+            error_msg = f"{date_str},NA,NA,Date processing error: {str(e)}"
+            print(f"Error processing date: {error_msg}")
+            with open(error_log_file, "a") as f:
+                f.write(f"{error_msg}\n")
             continue
 
         print(f"Total filings processed so far: {total_filings_processed}")
