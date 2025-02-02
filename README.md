@@ -14,3 +14,4 @@ This repo contains `npxdownloader.py` which allows you to download all SEC N-PX 
   `touch npx_download_errors.txt npx_download_progress.txt`
 
 - Adjust SEC header identifier `set_identity()`, and change the function call in the main function for desired outcome.
+- If you want to save the files in the same directory as this project, create a files directory as it is in the `.gitignore`
