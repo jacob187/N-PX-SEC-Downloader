@@ -127,18 +127,6 @@ def download_npx_filings_from_date(start_date, path):
     print(f"\nFinal total of filings processed: {total_filings_processed}")
 
 
-def download_npx_filings_quarter(path: str) -> None:
-    filings = get_filings(quarter=1, form="N-PX")
-    for filing in filings:
-        filing.attachments.download(path)
-
-
-def get_number_npx_filings(number_of_filings: int, year: int):
-    filings = get_filings(filing_date="2024-01-01", form="N-PX")
-    for i in range(0, number_of_filings):
-        filing = filings[i]
-
-
 if __name__ == "__main__":
     # This is required for the SEC as the request header
     set_identity("Your Name your@email.com")
