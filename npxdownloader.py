@@ -27,6 +27,13 @@ def download_npx_filings_from_date(start_date, path):
 
     progress_file = "npx_download_progress.txt"
     error_log_file = "npx_download_errors.txt"
+
+    # Create files if they don't exist
+    if not os.path.exists(progress_file):
+        open(progress_file, "w").close()
+    if not os.path.exists(error_log_file):
+        open(error_log_file, "w").close()
+
     total_filings_processed = 0
 
     current_date = start_date.date() if isinstance(start_date, datetime) else start_date
