@@ -9,9 +9,5 @@ This repo contains `npxdownloader.py` which allows you to download all SEC N-PX 
 
   `pip install -r requirements.txt`
 
-- Create files to track download date progress and errors.
-
-  `touch npx_download_errors.txt npx_download_progress.txt`
-
 - Adjust SEC header identifier `set_identity()`, and change the parameters in the `download_npx_filings_from_date()` method to match desired function.
 - If you want to save the files in the same directory as this project, create a files directory as it is in the `.gitignore`.
