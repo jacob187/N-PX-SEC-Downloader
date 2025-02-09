@@ -71,7 +71,8 @@ def download_npx_filings_from_date(start_date, path):
                         os.makedirs(filing_dir, exist_ok=True)
 
                         try:
-                            filing.attachments.download(filing_dir)
+                            for attachment in filing.attachments:
+                                attachment.download(filing_dir)
                             filings_found = True
                             total_filings_processed += 1
                             print(
