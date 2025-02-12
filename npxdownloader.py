@@ -78,21 +78,7 @@ def download_npx_filings_from_date(start_date, path):
                             print(
                                 f"Successfully downloaded filing for {filing.company} (CIK: {filing.cik})"
                             )
-                        except (
-                            gzip.BadGzipFile,
-                            httpx.HTTPError,
-                            asyncio.TimeoutError,
-                            ssl.SSLError,
-                        ) as e:
-                            error_msg = (
-                                f"{date_str},{filing.cik},{filing.company},{str(e)}"
-                            )
-                            print(f"Error downloading filing: {error_msg}")
-                            # Log error to file
-                            with open(error_log_file, "a") as f:
-                                f.write(f"{error_msg}\n")
-                            time.sleep(5)  # Longer delay after error
-                            continue
+
                         except Exception as e:
                             error_msg = (
                                 f"{date_str},{filing.cik},{filing.company},{str(e)}"
@@ -101,8 +87,11 @@ def download_npx_filings_from_date(start_date, path):
                             # Log error to file
                             with open(error_log_file, "a") as f:
                                 f.write(f"{error_msg}\n")
+
+                            time.sleep(1)
                             continue
                     except Exception as e:
+
                         error_msg = f"{date_str},{filing.cik},{filing.company},Processing error: {str(e)}"
                         print(f"Error processing filing: {error_msg}")
                         with open(error_log_file, "a") as f:
