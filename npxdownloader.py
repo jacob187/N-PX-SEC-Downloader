@@ -1,12 +1,10 @@
 from edgar import get_filings, set_identity
 from datetime import datetime, timedelta
 import os
-import gzip
 import time
-import httpx
-import asyncio
-import ssl
+import dotenv
 
+dotenv.load_dotenv()
 
 def download_npx_filings_year(year: int, path: str) -> None:
     filings = get_filings(year, form="N-PX")
@@ -126,8 +124,11 @@ def download_npx_filings_from_date(start_date, path):
 
 if __name__ == "__main__":
     # This is required for the SEC as the request header
-    set_identity("Your Name your@email.com")
-    start_date = datetime(
-        2024, 1, 1
-    )  # Example, change the first parameter to the desired year
+    set_identity(os.getenv("SEC_HEADER"))
+    start_year = input("Enter the year to start downloading. If you have begun downloading as determined by contents in npx_download_progress.txt, that will override the year: ")
+    try:
+        start_date = datetime(int(start_year), 1, 1)
+    except ValueError:
+        print("Invalid year format. Using current year as default.")
+        start_date = datetime.now().date()
     download_npx_filings_from_date(start_date=start_date, path="./files")
