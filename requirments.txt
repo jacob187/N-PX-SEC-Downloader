@@ -42,6 +42,7 @@ pydantic==2.10.6
 pydantic_core==2.27.2
 Pygments==2.19.1
 python-dateutil==2.9.0.post0
+python-dotenv==1.1.0
 pytz==2025.1
 pyzmq==26.2.1
 rank-bm25==0.2.2
