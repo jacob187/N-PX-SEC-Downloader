@@ -9,5 +9,5 @@ This repo contains `npxdownloader.py` which allows you to download all SEC N-PX 
 
   `pip install -r requirements.txt`
 
-- Adjust SEC header identifier `set_identity()`, and change the parameters in the `download_npx_filings_from_date()` method to match desired function.
+- Create a .env file and add your SEC header identifier. See .env.example.
 - If you want to save the files in the same directory as this project, create a files directory as it is in the `.gitignore`.
