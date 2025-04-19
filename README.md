@@ -9,5 +9,5 @@ This repo contains `npxdownloader.py` which allows you to download all SEC N-PX 
 
   `pip install -r requirements.txt`
 
-- Create a .env file and add your SEC header identifier. See .env.example.
+- Create a .env file and add your SEC header identifier to the varaible `SEC_HEADER` and the download to the variable `NPX_DOWNLOAD_PATH`. See .env.example.
 - If you want to save the files in the same directory as this project, create a files directory as it is in the `.gitignore`.
