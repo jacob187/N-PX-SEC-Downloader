@@ -23,6 +23,7 @@ def download_npx_filings_from_date(start_date, path):
     """
     year = start_date.year if isinstance(start_date, datetime) else start_date.year
     end_date = datetime(year, 12, 31).date()
+    today = datetime.now().date()
 
     progress_file = "npx_download_progress.txt"
     error_log_file = "npx_download_errors.txt"
@@ -47,7 +48,11 @@ def download_npx_filings_from_date(start_date, path):
                 print(f"Resuming from date: {current_date}")
 
     while current_date <= end_date:
-        print(f"\nProcessing date: {current_date}")
+        if current_date > today:
+            end_date = today
+            print(f"Limiting end date to today: {end_date}")
+            print(f"\nProcessing date: {current_date}")
+
         date_str = current_date.strftime("%Y-%m-%d")
 
         try:
