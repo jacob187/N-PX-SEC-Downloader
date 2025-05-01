@@ -4,7 +4,7 @@ This repo contains `npxdownloader.py` which allows you to download all SEC N-PX 
 
 ## Installation
 
-- Ensure Python 3.9+ is installed.
+- Ensure Python 3.11+ is installed.
 - Install the dependencies:
 
   `pip install -r requirements.txt`
