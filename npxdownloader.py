@@ -8,7 +8,13 @@ dotenv.load_dotenv()
 
 
 def download_npx_filings_year(year: int, path: str) -> None:
-    filings = get_filings(year, form="N-PX")
+    npx_filings = get_filings(year, form="N-PX")
+    npxa_filings = get_filings(year, form="N-PX/A")
+    filings = []
+    if npx_filings:
+        filings.extend(list(npx_filings))
+    if npxa_filings:
+        filings.extend(list(npxa_filings))
     for filing in filings:
         filing.attachments.download(path)
 
@@ -60,8 +66,15 @@ def download_npx_filings_from_date(start_date, path):
             os.makedirs(date_dir, exist_ok=True)
 
             filings_found = False
-            filings = get_filings(filing_date=date_str, form="N-PX")
-            if filings is not None:
+            npx_filings = get_filings(filing_date=date_str, form="N-PX")
+            npxa_filings = get_filings(filing_date=date_str, form="N-PX/A")
+            filings = []
+            if npx_filings:
+                filings.extend(list(npx_filings))
+            if npxa_filings:
+                filings.extend(list(npxa_filings))
+
+            if filings:
                 filings_list = list(filings)
                 print(f"Found {len(filings_list)} filings for {date_str}")
 
